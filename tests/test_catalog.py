@@ -4,7 +4,7 @@
 # Test catalog functionality in the goose API.
 #
 
-from goose import Stac
+from dgcatalog import Stac
 
 
 class TestCatalog:
