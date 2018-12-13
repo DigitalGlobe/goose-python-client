@@ -31,10 +31,11 @@ class Stac:
         :return: URL with path appended
         """
         parts = urllib.parse.urlsplit(url)
+        url_path = parts.path
         if not parts.path.endswith('/') and not path.startswith('/'):
-            parts.path += '/'
-        parts.path += path
-        return urllib.parse.urlunsplit(parts)
+            url_path += '/'
+        url_path += path
+        return urllib.parse.urlunsplit((parts.scheme, parts.netloc, url_path, parts.query, parts.fragment))
 
     @staticmethod
     def _handle_response(response):
