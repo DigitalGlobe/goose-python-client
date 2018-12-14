@@ -11,8 +11,9 @@ Something like this...
 
 ```python
 from dgcatalog import Stac
-stac = Stac()
-item = stac.item.get('1030010080D4FE00')
+stac = Stac(username='my_gdbx_username')
+Password:  password
+item = stac.get_item('1030010080D4FE00')
 ```
 
 ### Building a wheel
@@ -21,4 +22,12 @@ item = stac.item.get('1030010080D4FE00')
 rm -rf build
 rm -rf dgcatalog.egg-info
 python setup.py sdist bdist_wheel
+```
+
+### Building documentation using Sphinx
+
+```
+cd sphinx
+sphinx-apidoc.exe -f -o doc ..\dgcatalog
+sphinx-build.exe -E -c . -b html .\doc ..\documentation
 ```

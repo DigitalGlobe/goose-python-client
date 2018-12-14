@@ -27,11 +27,11 @@ class Stac:
         If username is specified but password is None then you are prompted to enter a
         password using getpass.
 
-        :param url:
-        :param token:
-        :param username:
-        :param password:
-        :param verbose: If True then set logging level to INFO.
+        :param url: URL of STAC service.  If None then use default URL.
+        :param token: GBDX token to use in service requests.
+        :param username: Username to use in generating token.
+        :param password: Password to use in generating token.
+        :param verbose: If True then Stac methods print informational messages to stdout.
         """
 
         if token and (username or password):
@@ -150,6 +150,7 @@ class Stac:
     def get_item(self, item_id):
         """
         Return a single STAC item given its ID.
+
         :param item_id: STAC item ID
         :return: Dict of STAC item.
         """
@@ -158,6 +159,7 @@ class Stac:
     def update_item(self, item):
         """
         Update an existing STAC item.
+
         :param item:
         :return:
         """
@@ -210,6 +212,7 @@ class Stac:
     def _url_append_path(url, path):
         """
         Append to a URL's path portion, leaving all other parts of the URL the same.
+
         :param url: A URL
         :param path: Path to append
         :return: URL with path appended
@@ -227,6 +230,7 @@ class Stac:
         Handle response from the STAC web service.  We expect every response to be JSON and for
         all service methods to report exceptions the same way, so this single method will handle
         all web service responses.
+
         :param requests.Response response:
         :raises StacException: if error returned by web service
         :return: Dictionary of deserialized JSON if response was successful
