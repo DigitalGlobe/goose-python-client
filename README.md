@@ -26,8 +26,10 @@ python setup.py sdist bdist_wheel
 
 ### Building documentation using Sphinx
 
+The following commands build the dgcatalog.html file in the repo's root:
+
 ```
 cd sphinx
 sphinx-apidoc.exe -f -o doc ..\dgcatalog
-sphinx-build.exe -E -c . -b html .\doc ..\documentation
+sphinx-build.exe -E -c . -b singlehtml .\doc ..
 ```

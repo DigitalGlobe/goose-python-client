@@ -1,0 +1,405 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>dgcatalog 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="dgcatalog-package">
+<h1>dgcatalog package<a class="headerlink" href="#dgcatalog-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-dgcatalog.exceptions">
+<span id="dgcatalog-exceptions-module"></span><h2>dgcatalog.exceptions module<a class="headerlink" href="#module-dgcatalog.exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="dgcatalog.exceptions.StacException">
+<em class="property">exception </em><code class="descclassname">dgcatalog.exceptions.</code><code class="descname">StacException</code><span class="sig-paren">(</span><em>message</em>, <em>response=None</em>, <em>request_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#dgcatalog.exceptions.StacException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>An exception from the STAC catalog web service</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>message</strong> – User-friendly error message</li>
+<li><strong>response</strong> – Optional requests.Response object (See <a class="reference external" href="http://docs.python-requests.org/en/master/api/#requests.Response">http://docs.python-requests.org/en/master/api/#requests.Response</a>)</li>
+<li><strong>request_id</strong> – Optional request ID</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dgcatalog.stac">
+<span id="dgcatalog-stac-module"></span><h2>dgcatalog.stac module<a class="headerlink" href="#module-dgcatalog.stac" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dgcatalog.stac.SpatialOperation">
+<em class="property">class </em><code class="descclassname">dgcatalog.stac.</code><code class="descname">SpatialOperation</code><a class="headerlink" href="#dgcatalog.stac.SpatialOperation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Supported methods of comparing a search geometry with a STAC item geometry.</p>
+<dl class="attribute">
+<dt id="dgcatalog.stac.SpatialOperation.CONTAINS">
+<code class="descname">CONTAINS</code><em class="property"> = 2</em><a class="headerlink" href="#dgcatalog.stac.SpatialOperation.CONTAINS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query STAC items contained inside search geometry.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dgcatalog.stac.SpatialOperation.INTERSECT">
+<code class="descname">INTERSECT</code><em class="property"> = 1</em><a class="headerlink" href="#dgcatalog.stac.SpatialOperation.INTERSECT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query STAC items that intersect search geometry.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dgcatalog.stac.SpatialOperation.INTERSECT_BBOX">
+<code class="descname">INTERSECT_BBOX</code><em class="property"> = 3</em><a class="headerlink" href="#dgcatalog.stac.SpatialOperation.INTERSECT_BBOX" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query STAC items whose bounding box intersects search geometry bounding box.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dgcatalog.stac.Stac">
+<em class="property">class </em><code class="descclassname">dgcatalog.stac.</code><code class="descname">Stac</code><span class="sig-paren">(</span><em>url=None</em>, <em>token=None</em>, <em>username=None</em>, <em>password=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#dgcatalog.stac.Stac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Initialize connection to a STAC catalog.</p>
+<p>Credentials must be provided by specifying either a token or a username.
+These parameters are mutually exclusive.  If token is specified then username and
+password must be None.  If username is specified then token must be None.
+If username is specified but password is None then you are prompted to enter a
+password using getpass.</p>
+<p>When using a username/password a token will be generated by calling GBDX
+at geobigdata.io.</p>
+<p>A Stac object does not generate a new token once its current token has expired.
+It is the user’s responsibility to create a new Stac object if a token expires
+and a new one needs to be generated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>url</strong> – URL of STAC service.  If None then use default URL.</li>
+<li><strong>token</strong> – GBDX token to use in service requests.</li>
+<li><strong>username</strong> – Username to use in generating token.</li>
+<li><strong>password</strong> – Password to use in generating token.</li>
+<li><strong>verbose</strong> – If True then Stac methods print informational messages to stdout.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="dgcatalog.stac.Stac.default_auth_url">
+<code class="descname">default_auth_url</code><em class="property"> = 'https://geobigdata.io/auth/v1/oauth/token'</em><a class="headerlink" href="#dgcatalog.stac.Stac.default_auth_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dgcatalog.stac.Stac.default_stac_url">
+<code class="descname">default_stac_url</code><em class="property"> = 'https://discover.digitalglobe.com/v2/stac'</em><a class="headerlink" href="#dgcatalog.stac.Stac.default_stac_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dgcatalog.stac.Stac.delete_item">
+<code class="descname">delete_item</code><span class="sig-paren">(</span><em>item_id</em><span class="sig-paren">)</span><a class="headerlink" href="#dgcatalog.stac.Stac.delete_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a STAC item.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item_id</strong> (<em>str</em>) – STAC item ID.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="dgcatalog.stac.Stac.format_datetime_iso8601">
+<em class="property">static </em><code class="descname">format_datetime_iso8601</code><span class="sig-paren">(</span><em>dt</em><span class="sig-paren">)</span><a class="headerlink" href="#dgcatalog.stac.Stac.format_datetime_iso8601" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dgcatalog.stac.Stac.get_catalog">
+<code class="descname">get_catalog</code><span class="sig-paren">(</span><em>catalog_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#dgcatalog.stac.Stac.get_catalog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a catalog or catalogs.  If catalog_id is not None then return just that catalog,
+otherwise return a list of all catalogs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>catalog_id</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#dgcatalog.exceptions.StacException" title="dgcatalog.exceptions.StacException"><strong>StacException</strong></a> – if no catalog with catalog_id exists</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Dictionary of deserialized JSON.  List of dictionaries, each dictionary a catalog.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dgcatalog.stac.Stac.get_item">
+<code class="descname">get_item</code><span class="sig-paren">(</span><em>item_id</em>, <em>catalog_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#dgcatalog.stac.Stac.get_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a single STAC item given its ID.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>item_id</strong> (<em>str</em>) – STAC item ID</li>
+<li><strong>catalog_id</strong> (<em>str</em>) – Optional catalog containing STAC item.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Dict for STAC item if it exists, else None.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dgcatalog.stac.Stac.get_token">
+<code class="descname">get_token</code><span class="sig-paren">(</span><em>auth_url</em>, <em>username</em>, <em>password</em><span class="sig-paren">)</span><a class="headerlink" href="#dgcatalog.stac.Stac.get_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a token from the GBDX authorization service.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>auth_url</strong> – URL to authorization service, generally “<a class="reference external" href="https://geobigdata.io/auth/v1/oauth/token">https://geobigdata.io/auth/v1/oauth/token</a>”</li>
+<li><strong>username</strong> – GBDX username.</li>
+<li><strong>password</strong> – GBDX password.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">GBDX token.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#dgcatalog.exceptions.StacException" title="dgcatalog.exceptions.StacException"><strong>StacException</strong></a> – if user is unauthorized, or any other kind of error generating token.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dgcatalog.stac.Stac.insert_catalog">
+<code class="descname">insert_catalog</code><span class="sig-paren">(</span><em>catalog</em><span class="sig-paren">)</span><a class="headerlink" href="#dgcatalog.stac.Stac.insert_catalog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new catalog in the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>catalog</strong> – Catalog object as dict.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#dgcatalog.exceptions.StacException" title="dgcatalog.exceptions.StacException"><strong>StacException</strong></a> – If new catalog cannot be added to database.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dgcatalog.stac.Stac.insert_item">
+<code class="descname">insert_item</code><span class="sig-paren">(</span><em>item</em>, <em>catalog_id</em><span class="sig-paren">)</span><a class="headerlink" href="#dgcatalog.stac.Stac.insert_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert a new STAC item into a STAC catalog.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>item</strong> (<em>dict</em>) – STAC item.</li>
+<li><strong>catalog_id</strong> (<em>str</em>) – Catalog to insert item into.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dgcatalog.stac.Stac.insert_items">
+<code class="descname">insert_items</code><span class="sig-paren">(</span><em>items</em>, <em>catalog_id</em><span class="sig-paren">)</span><a class="headerlink" href="#dgcatalog.stac.Stac.insert_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert new STAC items into a STAC catalog.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>items</strong> – Sequence of Item objects as dict’s.</li>
+<li><strong>catalog_id</strong> (<em>str</em>) – Catalog to insert items into.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dgcatalog.stac.Stac.search">
+<code class="descname">search</code><span class="sig-paren">(</span><em>catalog_id=None</em>, <em>bbox=None</em>, <em>geometry=None</em>, <em>start_datetime=None</em>, <em>end_datetime=None</em>, <em>spatial_operation=&lt;SpatialOperation.INTERSECT: 1&gt;</em>, <em>item_ids=None</em>, <em>properties_filter=None</em>, <em>order_by=None</em>, <em>limit=None</em>, <em>page=None</em><span class="sig-paren">)</span><a class="headerlink" href="#dgcatalog.stac.Stac.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query the STAC database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>catalog_id</strong> – Catalog to search in.  If None then search entire database.</li>
+<li><strong>bbox</strong> – Bounding box to search by.  Format is a sequence of the form [xmin, ymin, xmax, ymax]
+or [xmin, ymin, zmin, xmax, ymax, zmax].  Optional.</li>
+<li><strong>geometry</strong> – Geometry to search by.  Dict of GeoJSON.  Optional.</li>
+<li><strong>start_datetime</strong> (<em>datetime</em>) – </li>
+<li><strong>end_datetime</strong> (<em>datetime</em>) – </li>
+<li><strong>spatial_operation</strong> (<a class="reference internal" href="#dgcatalog.stac.SpatialOperation" title="dgcatalog.stac.SpatialOperation"><em>SpatialOperation</em></a>) – Type of spatial operation to perform between search geometry
+and stac item geometry.</li>
+<li><strong>item_ids</strong> – List of item IDs to query.</li>
+<li><strong>properties_filter</strong> – STAC properties filter.</li>
+<li><strong>order_by</strong> – Columns to order result by.</li>
+<li><strong>limit</strong> – Maximum number of items to return.</li>
+<li><strong>page</strong> – Page number of results to query, starting at 1.  Page size is given by limit parameter.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of STAC items, each item a dictionary.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dgcatalog.stac.Stac.update_catalog">
+<code class="descname">update_catalog</code><span class="sig-paren">(</span><em>catalog</em><span class="sig-paren">)</span><a class="headerlink" href="#dgcatalog.stac.Stac.update_catalog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update a catalog.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>catalog</strong> – Catalog object as dict.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#dgcatalog.exceptions.StacException" title="dgcatalog.exceptions.StacException"><strong>StacException</strong></a> – If catalog cannot be updated.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dgcatalog.stac.Stac.update_item">
+<code class="descname">update_item</code><span class="sig-paren">(</span><em>item</em>, <em>catalog_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#dgcatalog.stac.Stac.update_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update an existing STAC item.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>item</strong> (<em>dict</em>) – STAC item.</li>
+<li><strong>catalog_id</strong> (<em>str</em>) – Catalog containing STAC item.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dgcatalog">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dgcatalog" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="dgcatalog.html#document-dgcatalog">dgcatalog</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="dgcatalog.html#document-dgcatalog">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, DigitalGlobe.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

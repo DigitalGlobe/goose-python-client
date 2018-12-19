@@ -15,3 +15,11 @@ class StacException(Exception):
         self.message = message
         self.response = response
         self.request_id = request_id
+
+    def __str__(self):
+        if not self.message:
+            return "StacException"
+        message = self.message
+        if self.request_id:
+            message += ' (Request ID: {})'.format(self.request_id)
+        return message
