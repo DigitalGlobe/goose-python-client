@@ -19,36 +19,32 @@ class TestCatalog:
         result = stac.get_catalog()
         print(result)
 
-    def test_get_item1(self, stac):
-        item = stac.get_item('10400100108FCE00')
-        print(item)
-
-    def test_search1(self, stac):
+    def test_catalog2(self, stac):
         """
-        Get a set of STAC items.
-
-        :param stac: Pytest fixture - connection to Stac service
+        Get a particular catalog.
+        :param stac:
+        :return:
         """
         assert isinstance(stac, Stac)
-        result = stac.search(limit=10, start_datetime=datetime(2010, 1, 1), end_datetime=datetime(2015, 1, 1))
+        result = stac.get_catalog('wv')
+        assert result
         print(result)
 
-    def test_bad_search1(self, stac):
-        assert isinstance(stac, Stac)
-        try:
-            result = stac.search(geometry='bad geometry')
-            print(result)
-        except Exception as exp:
-            print(exp)
-
     def test_catalog_update(self, stac):
-        catalog = stac.get_catalog('wv04')
-        catalog['description'] = 'DigitalGlobe WorldView 4 images'
-        stac.update_catalog(catalog)
+        assert isinstance(stac, Stac)
+        catalog = stac.get_catalog('wv')
+        catalog['description'] = 'DigitalGlobe WorldView 4 image catalog'
+        result = stac.update_catalog(catalog)
+        assert not result
 
     def test_catalog_update_fails1(self, stac):
         try:
-            stac.update_catalog({'id': 'no-such-id'})
+            assert isinstance(stac, Stac)
+            catalog = stac.get_catalog('wv')
+            # Either description or title is required, I forget which
+            catalog['description'] = None
+            catalog['title'] = None
+            stac.update_catalog(catalog)
             assert False
         except Exception as exp:
             print(exp)

@@ -11,9 +11,6 @@ import pytest
 
 from dgcatalog import Stac
 
-url = 'https://api-test-2.discover.digitalglobe.com/v2/stac'
-username = 'user_tester@mailinator.com'
-
 
 def get_connection_params():
     """

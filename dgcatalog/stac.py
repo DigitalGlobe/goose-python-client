@@ -161,7 +161,7 @@ class Stac:
         catalog_id = catalog.get('id')
         if not catalog_id or not isinstance(catalog_id, str):
             raise StacException('Catalog object does not have a valid "id" property.')
-        url =  self._make_url('catalog/{}'.format(catalog_id))
+        url = self._make_url('catalog/{}'.format(catalog_id))
         # Raise exception if error returned, otherwise return None.
         return self._put(url, json=catalog)
 
@@ -184,27 +184,38 @@ class Stac:
         """
         Insert new STAC items into a STAC catalog.
 
-        :param items: Sequence of Item objects as dict's.
+        :param items: Sequence of STAC items as dict's.
         :param str catalog_id: Catalog to insert items into.
         :return:
         """
         url = self._make_url('catalog/{}/item'.format(catalog_id))
-        return self._post(url, json=items)
+        # Create a GeoJSON FeatureCollection to post
+        collection = {
+            'type': 'FeatureCollection',
+            'features': items
+        }
+        return self._post(url, json=collection)
 
     def get_item(self, item_id, catalog_id=None):
         """
         Return a single STAC item given its ID.
 
         :param str item_id: STAC item ID
-        :param str catalog_id: Optional catalog containing STAC item.
+        :param str catalog_id: Optional catalog ID
         :return: Dict for STAC item if it exists, else None.
         """
-        url = self._make_url('search')
-        items = self._get(url, params={'id': item_id})
-        if not items:
-            return None
+        if not item_id:
+            raise StacException('Required parameter item_id is empty.')
+        if catalog_id:
+            url = self._make_url('catalog/{}/item/{}'.format(catalog_id, item_id))
+            return self._get(url)
         else:
-            return items[0]
+            url = self._make_url('search')
+            items = self._get(url, params={'id': item_id})
+            if not items:
+                return None
+            else:
+                return items[0]
 
     def update_item(self, item, catalog_id=None):
         """
@@ -220,23 +231,34 @@ class Stac:
         url = self._make_url('catalog/{}/item/{}'.format(catalog_id, item_id))
         return self._put(url)
 
-    def delete_item(self, item_id):
+    def delete_item(self, item_id, catalog_id):
         """
         Delete a STAC item.
 
         :param str item_id: STAC item ID.
-        :return:
+        :param str catalog_id: Catalog containing STAC item.
+        :return: True if item existed in the given catalog and was successfully deleted,
+            False if item does not exist in the catalog.
         """
-        url = self._make_url('item/{}'.format(item_id))
-        return self._delete(url)
+        if not item_id:
+            raise StacException('Required parameter item_id is empty.')
+        if not catalog_id:
+            raise StacException('Required parameter catalog_id is empty.')
+        url = self._make_url('catalog/{}/item/{}'.format(catalog_id, item_id))
+        try:
+            self._delete(url)
+            return True
+        except StacException as exp:
+            if exp.response.status_code == 404:
+                return False
+            raise
 
-    def search(self, catalog_id=None, bbox=None, geometry=None, start_datetime=None, end_datetime=None,
-               spatial_operation=SpatialOperation.INTERSECT, item_ids=None, properties_filter=None, order_by=None,
+    def search(self, bbox=None, geometry=None, start_datetime=None, end_datetime=None,
+               spatial_operation=None, item_ids=None, query=None, order_by=None,
                limit=None, page=None):
         """
         Query the STAC database.
 
-        :param catalog_id: Catalog to search in.  If None then search entire database.
         :param bbox: Bounding box to search by.  Format is a sequence of the form [xmin, ymin, xmax, ymax]
             or [xmin, ymin, zmin, xmax, ymax, zmax].  Optional.
         :param geometry: Geometry to search by.  Dict of GeoJSON.  Optional.
@@ -245,29 +267,24 @@ class Stac:
         :param SpatialOperation spatial_operation: Type of spatial operation to perform between search geometry
             and stac item geometry.
         :param item_ids: List of item IDs to query.
-        :param properties_filter: STAC properties filter.
+        :param query: STAC properties filter.
         :param order_by: Columns to order result by.
         :param limit: Maximum number of items to return.
         :param page: Page number of results to query, starting at 1.  Page size is given by limit parameter.
         :return: List of STAC items, each item a dictionary.
         """
 
-        # URL depends on whether catalog provided
-        if catalog_id:
-            url = self._make_url('catalog/{}/search'.format(catalog_id))
-        else:
-            url = self._make_url('search')
+        url = self._make_url('search')
 
         body = {}
         if bbox:
             body['bbox'] = bbox
         if geometry:
             body['geometry'] = geometry
-        if spatial_operation and not isinstance(spatial_operation, SpatialOperation):
-            raise StacException('spatial_operation must be enum of type SpatialOperation')
-        if spatial_operation is None:
-            spatial_operation = SpatialOperation.INTERSECT
-        body['spatial_operation'] = str(spatial_operation)
+        if spatial_operation:
+            if not isinstance(spatial_operation, SpatialOperation):
+                raise StacException('spatial_operation must be enum of type SpatialOperation')
+            body['spatial_operation'] = str(spatial_operation)
 
         if start_datetime and end_datetime:
             body['time'] = '{}/{}'.format(
@@ -280,6 +297,15 @@ class Stac:
             if not isinstance(item_ids, collections.abc.Sequence):
                 raise StacException('item_ids must be a sequence')
             body['id'] = ','.join(str(item_id) for item_id in item_ids)
+
+        if query:
+            body['query'] = query
+        if order_by:
+            body['order_by'] = order_by
+        if limit:
+            body['limit'] = limit
+        if page:
+            body['page'] = page
 
         return self._post(url, json=body)
 
@@ -367,28 +393,35 @@ class Stac:
 
         self._message('HTTP Status: {}'.format(response.status_code))
 
-        # We expect every web request to return JSON, no exceptions.  In case of bad API-Gateway
+        request_id = response.headers.get('X-DigitalGlobe-RequestId')
+        if request_id:
+            self._message('Request ID: {}'.format(request_id))
+
+        # We only support JSON content in the response body.  In case of bad API-Gateway
         # configuration we may get HTML in some cases, which we raise an exception for.
-        content_type = response.headers.get('Content-Type')
-        if content_type not in ('application/json', 'application/hal+json'):
-            raise StacException(
-                'Service error:  STAC server response content-type is not JSON:  {}'.format(content_type), response)
         content = None
-        if response.text:
-            try:
-                content = json.loads(response.text)
-            except Exception as exp:
-                raise StacException('Service error:  STAC server response body is invalid JSON', response) from exp
+        if response.status_code != 204:     # Ignore body if status == NoContent
+            content_type = response.headers.get('Content-Type')
+            if content_type == 'application/json':
+                if response.text:
+                    try:
+                        content = json.loads(response.text)
+                    except Exception as exp:
+                        raise StacException('Service error:  STAC server response body is invalid JSON', response) from exp
+            else:
+                raise StacException('Unsupported response Content-Type: "{}"'.format(content_type), response, request_id)
 
         if 200 <= response.status_code < 300:
             return content
 
-        # API-Gateway and our own lambdas both us a "Message" property to hold an error message.
-        message = content.get('Message', 'Error in catalog request.')
-        request_id = content.get('request-id', None)
-
         # For errors we expect the response to have a JSON properties "message" and "request_id"
         if 400 <= response.status_code < 600:
+            # API-Gateway and our own lambdas both use a "message" property to hold an error message.
+            message = None
+            if content:
+                message = content.get('message')
+            if not message:
+                message = 'Error in catalog response.'
             raise StacException(message, response, request_id)
 
         # Unrecognized HTTP status code
