@@ -44,7 +44,7 @@ class SpatialOperation(Enum):
 
 
 class Stac:
-    default_stac_url = 'https://discover.digitalglobe.com/v2/stac'
+    default_stac_url = 'https://api-2.discover.digitalglobe.com/v2/stac'
 
     default_auth_url = 'https://geobigdata.io/auth/v1/oauth/token'
 
@@ -180,12 +180,13 @@ class Stac:
         url = self._make_url('catalog/{}/item'.format(catalog_id))
         return self._post(url, json=item)
 
-    def insert_items(self, items, catalog_id):
+    def insert_items(self, items, catalog_id, attachments=None):
         """
         Insert new STAC items into a STAC catalog.
 
         :param items: Sequence of STAC items as dict's.
         :param str catalog_id: Catalog to insert items into.
+        :param attachments: Optional attachments to copy to each inserted item.
         :return:
         """
         url = self._make_url('catalog/{}/item'.format(catalog_id))
@@ -194,6 +195,8 @@ class Stac:
             'type': 'FeatureCollection',
             'features': items
         }
+        if attachments:
+            collection['attachments'] = attachments
         return self._post(url, json=collection)
 
     def get_item(self, item_id, catalog_id=None):
@@ -252,6 +255,18 @@ class Stac:
             if exp.response.status_code == 404:
                 return False
             raise
+
+    def get_attachments(self, item_id, catalog_id):
+        url = self._make_url('catalog/{}/item/{}/attachments'.format(catalog_id, item_id))
+        return self._get(url)
+
+    def update_attachments(self, item_id, catalog_id, attachments):
+        url = self._make_url('catalog/{}/item/{}/attachments'.format(catalog_id, item_id))
+        return self._put(url, json=attachments)
+
+    def delete_attachments(self, item_id, catalog_id):
+        url = self._make_url('catalog/{}/item/{}/attachments'.format(catalog_id, item_id))
+        return self._delete(url)
 
     def search(self, bbox=None, geometry=None, start_datetime=None, end_datetime=None,
                spatial_operation=None, item_ids=None, query=None, order_by=None,
