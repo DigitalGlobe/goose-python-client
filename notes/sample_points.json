@@ -1,0 +1,298 @@
+{
+    "imageIdentifier": "9c139d43-954c-488f-a6c5-327fa48e8ac2-inv",
+    "samplePointSets": [
+        {
+            "bandsetName": "n1_r_g_b",
+            "samplePoints": [
+                {
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -79.9661074789866,
+                            -6.86319160526544
+                        ],
+                        "crs": {
+                            "type": "name",
+                            "properties": {
+                                "name": "EPSG:4326"
+                            }
+                        }
+                    },
+                    "sampleLine": 19487,
+                    "samplePixel": 5544,
+                    "sampleTime": "2018-03-06T15:53:01.872394Z",
+                    "spacecraftToTargetOffNadirAngle": 3.2732827463129928,
+                    "spacecraftToTargetAzimuthAngle": 22.716522700747415,
+                    "targetToSunAzimuthAngle": 88.31628133881891,
+                    "targetToSunElevationAngle": 65.59243626935435,
+                    "targetToSpacecraftAzimuthAngle": 202.97962780861184,
+                    "targetToSpacecraftElevationAngle": 86.45012546284762,
+                    "resolution": 1.2373797512150015
+                },
+                {
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -79.9661132485269,
+                            -6.78997875681339
+                        ],
+                        "crs": {
+                            "type": "name",
+                            "properties": {
+                                "name": "EPSG:4326"
+                            }
+                        }
+                    },
+                    "sampleLine": 12960,
+                    "samplePixel": 5544,
+                    "sampleTime": "2018-03-06T15:53:00.566996Z",
+                    "spacecraftToTargetOffNadirAngle": 3.141370447667319,
+                    "spacecraftToTargetAzimuthAngle": 20.35499414859186,
+                    "targetToSunAzimuthAngle": 88.47748707345266,
+                    "targetToSunElevationAngle": 65.58906598045871,
+                    "targetToSpacecraftAzimuthAngle": 200.6011474318126,
+                    "targetToSpacecraftElevationAngle": 86.59508575378187,
+                    "resolution": 1.2375440598100413
+                },
+                {
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -79.9661203447128,
+                            -6.75390261772751
+                        ],
+                        "crs": {
+                            "type": "name",
+                            "properties": {
+                                "name": "EPSG:4326"
+                            }
+                        }
+                    },
+                    "sampleLine": 9743,
+                    "samplePixel": 5544,
+                    "sampleTime": "2018-03-06T15:52:59.923597Z",
+                    "spacecraftToTargetOffNadirAngle": 3.0783353939430014,
+                    "spacecraftToTargetAzimuthAngle": 19.11712668987566,
+                    "targetToSunAzimuthAngle": 88.55690310818648,
+                    "targetToSunElevationAngle": 65.58732469182549,
+                    "targetToSpacecraftAzimuthAngle": 199.35329160601714,
+                    "targetToSpacecraftElevationAngle": 86.66434811250546,
+                    "resolution": 1.2377003537291844
+                },
+                {
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -79.9661294248922,
+                            -6.64464136867693
+                        ],
+                        "crs": {
+                            "type": "name",
+                            "properties": {
+                                "name": "EPSG:4326"
+                            }
+                        }
+                    },
+                    "sampleLine": 0,
+                    "samplePixel": 5544,
+                    "sampleTime": "2018-03-06T15:52:57.975002Z",
+                    "spacecraftToTargetOffNadirAngle": 2.896885951386868,
+                    "spacecraftToTargetAzimuthAngle": 15.049682290277923,
+                    "targetToSunAzimuthAngle": 88.79733795447169,
+                    "targetToSunElevationAngle": 65.58175869602924,
+                    "targetToSpacecraftAzimuthAngle": 195.2480246867917,
+                    "targetToSpacecraftElevationAngle": 86.86366173961852,
+                    "resolution": 1.2390503786703648
+                }
+            ]
+        },
+        {
+            "bandsetName": "pan",
+            "samplePoints": [
+                {
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -79.9662893077776,
+                            -6.85458766932478
+                        ],
+                        "crs": {
+                            "type": "name",
+                            "properties": {
+                                "name": "EPSG:4326"
+                            }
+                        }
+                    },
+                    "sampleLine": 77951,
+                    "samplePixel": 21960,
+                    "sampleTime": "2018-03-06T15:53:01.872744Z",
+                    "spacecraftToTargetOffNadirAngle": 3.3542015194474297,
+                    "spacecraftToTargetAzimuthAngle": 22.104522588431283,
+                    "targetToSunAzimuthAngle": 88.33514352729048,
+                    "targetToSunElevationAngle": 65.59250700092319,
+                    "targetToSpacecraftAzimuthAngle": 202.35373167294094,
+                    "targetToSpacecraftElevationAngle": 86.36148425519738,
+                    "resolution": 0.3100112245712046
+                },
+                {
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -79.9662950105782,
+                            -6.78047288910266
+                        ],
+                        "crs": {
+                            "type": "name",
+                            "properties": {
+                                "name": "EPSG:4326"
+                            }
+                        }
+                    },
+                    "sampleLine": 51520,
+                    "samplePixel": 21960,
+                    "sampleTime": "2018-03-06T15:53:00.551196Z",
+                    "spacecraftToTargetOffNadirAngle": 3.222086302460709,
+                    "spacecraftToTargetAzimuthAngle": 19.7481978237608,
+                    "targetToSunAzimuthAngle": 88.49833192914429,
+                    "targetToSunElevationAngle": 65.58906938310811,
+                    "targetToSpacecraftAzimuthAngle": 199.98042847679145,
+                    "targetToSpacecraftElevationAngle": 86.50664330902443,
+                    "resolution": 0.3098175182636859
+                },
+                {
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -79.9663021579986,
+                            -6.74530228006553
+                        ],
+                        "crs": {
+                            "type": "name",
+                            "properties": {
+                                "name": "EPSG:4326"
+                            }
+                        }
+                    },
+                    "sampleLine": 38975,
+                    "samplePixel": 21960,
+                    "sampleTime": "2018-03-06T15:52:59.923947Z",
+                    "spacecraftToTargetOffNadirAngle": 3.161304062758006,
+                    "spacecraftToTargetAzimuthAngle": 18.561177011761856,
+                    "targetToSunAzimuthAngle": 88.57575296199663,
+                    "targetToSunElevationAngle": 65.58735940304548,
+                    "targetToSpacecraftAzimuthAngle": 198.78386535058505,
+                    "targetToSpacecraftElevationAngle": 86.57341687726124,
+                    "resolution": 0.30982482884145746
+                },
+                {
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -79.9663110168898,
+                            -6.63603558307351
+                        ],
+                        "crs": {
+                            "type": "name",
+                            "properties": {
+                                "name": "EPSG:4326"
+                            }
+                        }
+                    },
+                    "sampleLine": 0,
+                    "samplePixel": 21960,
+                    "sampleTime": "2018-03-06T15:52:57.975202Z",
+                    "spacecraftToTargetOffNadirAngle": 2.981763339235541,
+                    "spacecraftToTargetAzimuthAngle": 14.574555733912947,
+                    "targetToSunAzimuthAngle": 88.81619462653205,
+                    "targetToSunElevationAngle": 65.58175721480353,
+                    "targetToSpacecraftAzimuthAngle": 194.76066914141225,
+                    "targetToSpacecraftElevationAngle": 86.77059254059625,
+                    "resolution": 0.3096893742675756
+                }
+            ]
+        }
+    ],
+    "_links": {
+        "self": {
+            "href": "service://inventory/4.23/prod/image-sample-points/9c139d43-954c-488f-a6c5-327fa48e8ac2-inv"
+        }
+    },
+    "samplePointSummaries": [
+        {
+            "spacecraftToTargetOffNadirAngleAvg": 3.1798388059754212,
+            "spacecraftToTargetOffNadirAngleStart": 2.981763339235541,
+            "spacecraftToTargetOffNadirAngleEnd": 3.3542015194474297,
+            "spacecraftToTargetOffNadirAngleMin": 2.981763339235541,
+            "spacecraftToTargetOffNadirAngleMax": 3.3542015194474297,
+            "spacecraftToTargetAzimuthAngleAvg": 18.74711328946672,
+            "spacecraftToTargetAzimuthAngleStart": 14.574555733912947,
+            "spacecraftToTargetAzimuthAngleEnd": 22.104522588431283,
+            "spacecraftToTargetAzimuthAngleMin": 14.574555733912947,
+            "spacecraftToTargetAzimuthAngleMax": 22.104522588431283,
+            "targetToSunAzimuthAngleAvg": 88.55635576124087,
+            "targetToSunAzimuthAngleStart": 88.81619462653205,
+            "targetToSunAzimuthAngleEnd": 88.33514352729048,
+            "targetToSunAzimuthAngleMin": 88.33514352729048,
+            "targetToSunAzimuthAngleMax": 88.81619462653205,
+            "targetToSunElevationAngleAvg": 65.58767325047008,
+            "targetToSunElevationAngleStart": 65.58175721480353,
+            "targetToSunElevationAngleEnd": 65.59250700092319,
+            "targetToSunElevationAngleMin": 65.58175721480353,
+            "targetToSunElevationAngleMax": 65.59250700092319,
+            "targetToSpacecraftAzimuthAngleAvg": 198.96967366043242,
+            "targetToSpacecraftAzimuthAngleStart": 194.76066914141225,
+            "targetToSpacecraftAzimuthAngleEnd": 202.35373167294094,
+            "targetToSpacecraftAzimuthAngleMin": 194.76066914141225,
+            "targetToSpacecraftAzimuthAngleMax": 202.35373167294094,
+            "targetToSpacecraftElevationAngleAvg": 86.55303424551983,
+            "targetToSpacecraftElevationAngleStart": 86.77059254059625,
+            "targetToSpacecraftElevationAngleEnd": 86.36148425519738,
+            "targetToSpacecraftElevationAngleMin": 86.36148425519738,
+            "targetToSpacecraftElevationAngleMax": 86.77059254059625,
+            "resolutionAvg": 0.3098357364859809,
+            "resolutionStart": 0.3096893742675756,
+            "resolutionEnd": 0.3100112245712046,
+            "resolutionMin": 0.3096893742675756,
+            "resolutionMax": 0.3100112245712046,
+            "bandsetName": "pan"
+        },
+        {
+            "spacecraftToTargetOffNadirAngleAvg": 3.0974686348275453,
+            "spacecraftToTargetOffNadirAngleStart": 2.896885951386868,
+            "spacecraftToTargetOffNadirAngleEnd": 3.2732827463129928,
+            "spacecraftToTargetOffNadirAngleMin": 2.896885951386868,
+            "spacecraftToTargetOffNadirAngleMax": 3.2732827463129928,
+            "spacecraftToTargetAzimuthAngleAvg": 19.309581457373213,
+            "spacecraftToTargetAzimuthAngleStart": 15.049682290277923,
+            "spacecraftToTargetAzimuthAngleEnd": 22.716522700747415,
+            "spacecraftToTargetAzimuthAngleMin": 15.049682290277923,
+            "spacecraftToTargetAzimuthAngleMax": 22.716522700747415,
+            "targetToSunAzimuthAngleAvg": 88.53700236873243,
+            "targetToSunAzimuthAngleStart": 88.79733795447169,
+            "targetToSunAzimuthAngleEnd": 88.31628133881891,
+            "targetToSunAzimuthAngleMin": 88.31628133881891,
+            "targetToSunAzimuthAngleMax": 88.79733795447169,
+            "targetToSunElevationAngleAvg": 65.58764640941695,
+            "targetToSunElevationAngleStart": 65.58175869602924,
+            "targetToSunElevationAngleEnd": 65.59243626935435,
+            "targetToSunElevationAngleMin": 65.58175869602924,
+            "targetToSunElevationAngleMax": 65.59243626935435,
+            "targetToSpacecraftAzimuthAngleAvg": 199.5455228833083,
+            "targetToSpacecraftAzimuthAngleStart": 195.2480246867917,
+            "targetToSpacecraftAzimuthAngleEnd": 202.97962780861184,
+            "targetToSpacecraftAzimuthAngleMin": 195.2480246867917,
+            "targetToSpacecraftAzimuthAngleMax": 202.97962780861184,
+            "targetToSpacecraftElevationAngleAvg": 86.64330526718837,
+            "targetToSpacecraftElevationAngleStart": 86.86366173961852,
+            "targetToSpacecraftElevationAngleEnd": 86.45012546284762,
+            "targetToSpacecraftElevationAngleMin": 86.45012546284762,
+            "targetToSpacecraftElevationAngleMax": 86.86366173961852,
+            "resolutionAvg": 1.237918635856148,
+            "resolutionStart": 1.2390503786703648,
+            "resolutionEnd": 1.2373797512150015,
+            "resolutionMin": 1.2373797512150015,
+            "resolutionMax": 1.2390503786703648,
+            "bandsetName": "n1_r_g_b"
+        }
+    ]
+}

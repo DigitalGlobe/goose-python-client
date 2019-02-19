@@ -1,0 +1,138 @@
+{
+  "description": "Valid DG STAC item.  Has only pan resolution.",
+  "id": "103001004B316600",
+  "type": "Feature",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          -105.160846396,
+          39.1656009422
+        ],
+        [
+          -104.947574355,
+          39.1750024943
+        ],
+        [
+          -104.949890373,
+          39.0512153242
+        ],
+        [
+          -105.161151214,
+          39.0436821016
+        ],
+        [
+          -105.160846396,
+          39.1656009422
+        ]
+      ]
+    ]
+  },
+  "assets": {},
+  "properties": {
+    "vendor": "DigitalGlobe",
+    "datetime": "2015-11-09T18:04:46.000Z",
+    "eo:gsd": 0.31087391,
+    "eo:platform": "WORLDVIEW02",
+    "eo:constellation": "WORLDVIEW",
+    "eo:instrument": "VNIR",
+    "eo:bands": [
+      {
+        "name": "coastal blue",
+        "common_name": "coastal",
+        "center_wavelength": 0.427,
+        "full_width_half_max": 0.05
+      },
+      {
+        "name": "blue",
+        "common_name": "blue",
+        "center_wavelength": 0.478,
+        "full_width_half_max": 0.06
+      },
+      {
+        "name": "green",
+        "common_name": "green",
+        "center_wavelength": 0.546,
+        "full_width_half_max": 0.07
+      },
+      {
+        "name": "yellow",
+        "common_name": "yellow",
+        "center_wavelength": 0.608,
+        "full_width_half_max": 0.04
+      },
+      {
+        "name": "red",
+        "common_name": "red",
+        "center_wavelength": 0.659,
+        "full_width_half_max": 0.06
+      },
+      {
+        "name": "red edge",
+        "common_name": "red_edge",
+        "center_wavelength": 0.724,
+        "full_width_half_max": 0.04
+      },
+      {
+        "name": "nir1",
+        "common_name": "nir1",
+        "center_wavelength": 0.833,
+        "full_width_half_max": 0.125
+      },
+      {
+        "name": "nir2",
+        "common_name": "nir2",
+        "center_wavelength": 0.949,
+        "full_width_half_max": 0.180
+      }
+    ],
+    "eo:azimuth": 343.34719846,
+    "eo:sun_azimuth": 146.18356096,
+    "eo:sun_elevation": 58.29268107,
+    "eo:off_nadir": 3.22547233,
+    "eo:cloud_cover": 10,
+    "eo:epsg": null,
+    "dg:collect_time_start": "2015-11-09T18:04:46.000Z",
+    "dg:collect_time_end": "2015-11-09T18:04:55.000Z",
+    "dg:scan_direction": "forward",
+    "dg:acquisition_rev_number": 11176,
+    "dg:pan_resolution_min": 0.31087391,
+    "dg:pan_resolution_start": 0.31087391,
+    "dg:pan_resolution_max": 0.31091487,
+    "dg:pan_resolution_end": 0.31087394,
+    "dg:pan_resolution_avg": 0.3108927,
+    "dg:multi_resolution_max": null,
+    "dg:multi_resolution_min": null,
+    "dg:multi_resolution_end": null,
+    "dg:multi_resolution_avg": null,
+    "dg:multi_resolution_start": null,
+    "dg:sun_elevation_min": 58.20741093,
+    "dg:sun_elevation_max": 58.35212882,
+    "dg:target_azimuth_min": 338.49602735,
+    "dg:target_azimuth_max": 346.7232772,
+    "dg:target_azimuth_start": 338.49602735,
+    "dg:target_azimuth_end": 346.7232772,
+    "dg:off_nadir_min": 3.21857342,
+    "dg:off_nadir_max": 3.23552517,
+    "dg:off_nadir_start": 3.21857342,
+    "dg:off_nadir_end": 3.23552517,
+    "dg:sun_azimuth_min": 146.13009303,
+    "dg:sun_azimuth_max": 146.26006735,
+    "dg:stereo_pair_identifiers": [],
+    "dg:bits_per_pixel": 16,
+    "dg:storage": "online",
+    "dg:processing_options": [
+      "atmospheric_compensation",
+      "high_definition",
+      "pan_sharp",
+      "ortho"
+    ]
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://api.discover.digitallgobe.com/v2/stac/catalog/dg/item/103001004B316600"
+    }
+  ]
+}

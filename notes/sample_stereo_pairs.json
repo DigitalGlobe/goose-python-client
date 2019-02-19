@@ -1,0 +1,9 @@
+{
+    "stereoIdentifiers": [],
+    "message": "No stereo records found for imageIdentifier: b09cb068-dce3-4fc5-9b61-22d6d2caf316-inv",
+    "_links": {
+        "self": {
+            "href": "service://inventory-selection/3.20/prod/stereo/b09cb068-dce3-4fc5-9b61-22d6d2caf316-inv"
+        }
+    }
+}

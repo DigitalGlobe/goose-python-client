@@ -1,0 +1,317 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://discover.digitalglobe.com/schema/dg-stac-item-schema.json",
+  "title": "DigitalGlobe STAC item schema",
+  "definitions": {
+    "pan-resolution-missing": {
+      "description": "Require all pan resolution properties to be provided and be null.  Used when a DG item has no pan band.",
+      "type": "object",
+      "required": [
+        "dg:pan_resolution_min",
+        "dg:pan_resolution_max",
+        "dg:pan_resolution_avg",
+        "dg:pan_resolution_start",
+        "dg:pan_resolution_end"
+      ],
+      "properties": {
+        "dg:pan_resolution_min": {
+          "type": "null"
+        },
+        "dg:pan_resolution_max": {
+          "type": "null"
+        },
+        "dg:pan_resolution_avg": {
+          "type": "null"
+        },
+        "dg:pan_resolution_start": {
+          "type": "null"
+        },
+        "dg:pan_resolution_end": {
+          "type": "null"
+        }
+      }
+    },
+    "pan-resolution-present": {
+      "description": "Require all pan resolution properties to be provided",
+      "type": "object",
+      "required": [
+        "dg:pan_resolution_min",
+        "dg:pan_resolution_max",
+        "dg:pan_resolution_avg",
+        "dg:pan_resolution_start",
+        "dg:pan_resolution_end"
+      ],
+      "properties": {
+        "dg:pan_resolution_min": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "dg:pan_resolution_max": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "dg:pan_resolution_avg": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "dg:pan_resolution_start": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "dg:pan_resolution_end": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "multi-resolution-missing": {
+      "description": "Require all multi resolution properties to be provided and be null.  Used when a DG item has no multi bands.",
+      "type": "object",
+      "required": [
+        "dg:multi_resolution_min",
+        "dg:multi_resolution_max",
+        "dg:multi_resolution_avg",
+        "dg:multi_resolution_start",
+        "dg:multi_resolution_end"
+      ],
+      "properties": {
+        "dg:multi_resolution_min": {
+          "type": "null"
+        },
+        "dg:multi_resolution_max": {
+          "type": "null"
+        },
+        "dg:multi_resolution_avg": {
+          "type": "null"
+        },
+        "dg:multi_resolution_start": {
+          "type": "null"
+        },
+        "dg:multi_resolution_end": {
+          "type": "null"
+        }
+      }
+    },
+    "multi-resolution-present": {
+      "description": "Require all multi resolution properties to be provided.",
+      "type": "object",
+      "required": [
+        "dg:multi_resolution_min",
+        "dg:multi_resolution_max",
+        "dg:multi_resolution_avg",
+        "dg:multi_resolution_start",
+        "dg:multi_resolution_end"
+      ],
+      "properties": {
+        "dg:multi_resolution_min": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "dg:multi_resolution_max": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "dg:multi_resolution_avg": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "dg:multi_resolution_start": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "dg:multi_resolution_end": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "resolution": {
+      "description": "Requirements for pan and multi resolution values.  Require that the item have either pan resolution values, multi resolution values, or both.  If either pan or multi resolution values are missing then they must all be null.",
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/definitions/pan-resolution-present"
+            },
+            {
+              "$ref": "#/definitions/multi-resolution-present"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/definitions/pan-resolution-present"
+            },
+            {
+              "$ref": "#/definitions/multi-resolution-missing"
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/definitions/pan-resolution-missing"
+            },
+            {
+              "$ref": "#/definitions/multi-resolution-present"
+            }
+          ]
+        }
+      ]
+    },
+    "dg-item-extensions": {
+      "type": "object",
+      "required": [
+        "properties"
+      ],
+      "properties": {
+        "properties": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/resolution"
+            },
+            {
+              "type": "object",
+              "required": [
+                "dg:collect_time_start",
+                "dg:collect_time_end",
+                "dg:scan_direction",
+                "dg:acquisition_rev_number",
+                "dg:sun_elevation_max",
+                "dg:sun_elevation_min",
+                "dg:target_azimuth_max",
+                "dg:target_azimuth_end",
+                "dg:target_azimuth_min",
+                "dg:target_azimuth_start",
+                "dg:off_nadir_max",
+                "dg:off_nadir_start",
+                "dg:off_nadir_end",
+                "dg:off_nadir_min",
+                "dg:sun_azimuth_max",
+                "dg:sun_azimuth_min",
+                "dg:stereo_pair_identifiers",
+                "dg:bits_per_pixel",
+                "dg:storage",
+                "dg:processing_options"
+              ],
+              "properties": {
+                "vendor": {
+                  "type": "string",
+                  "enum": [
+                    "DigitalGlobe"
+                  ]
+                },
+                "dg:collect_time_start": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "dg:collect_time_end": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "dg:scan_direction": {
+                  "type": "string",
+                  "enum": [
+                    "forward",
+                    "reverse"
+                  ]
+                },
+                "dg:acquisition_rev_number": {
+                  "type": "integer"
+                },
+                "dg:sun_elevation_min": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "dg:sun_elevation_max": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "dg:sun_azimuth_min": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "dg:sun_azimuth_max": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "dg:target_azimuth_min": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "dg:target_azimuth_max": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "dg:target_azimuth_start": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "dg:target_azimuth_end": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "dg:off_nadir_min": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "dg:off_nadir_max": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "dg:off_nadir_start": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "dg:off_nadir_end": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "dg:stereo_pair_identifiers": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 0
+                  }
+                },
+                "dg:bits_per_pixel": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                "dg:storage": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  ]
+                },
+                "dg:processing_options": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 0
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "http://geojson.org/schema/Feature.json"
+    },
+    {
+      "$ref": "#/definitions/dg-item-extensions"
+    }
+  ]
+}
