@@ -341,7 +341,7 @@
   },
   "allOf": [
     {
-      "$ref": "http://geojson.org/schema/Feature.json"
+      "$ref": "http://stac.com/schemas/stac-eo-extension.json"
     },
     {
       "$ref": "#/definitions/dg-item-extensions"

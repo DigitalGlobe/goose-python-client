@@ -21,7 +21,7 @@ item = stac.get_item('1030010080D4FE00')
 ```
 rm -rf build
 rm -rf dgcatalog.egg-info
-python setup.py sdist bdist_wheel
+python setup-dgcatalog.py sdist bdist_wheel
 ```
 
 ### Building documentation using Sphinx

@@ -79,7 +79,7 @@ class Stac:
         if username and not password:
             password = getpass.getpass('Password: ')
         if username:
-            token = Stac.get_token(self, self.default_auth_url, username, password)
+            token = self.get_token(self.default_auth_url, username, password)
         self._token = token
         if url:
             self.url = url
@@ -100,6 +100,21 @@ class Stac:
         :return: GBDX token.
         :raises StacException: if user is unauthorized, or any other kind of error generating token.
         """
+
+        # GBDX auth service successful response with status 200:
+        # {
+        #     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGci..."
+        #     "expires_in": 604800,
+        #     "token_type": "Bearer",
+        #     "scope": "openid email offline_access",
+        #     "refresh_token": "B35E3o-Kn7LSW5WmjIkdZP3F65inHZrWpGJx7yx_mBsGT"
+        # }
+        #
+        # GBDX auth service failed response with status 400:
+        # {
+        #     "Error": "400 Bad Request: Invalid POST data"
+        # }
+
         params = {
             'grant_type': 'password',
             'username': username,
@@ -145,6 +160,7 @@ class Stac:
         :raises StacException: if no catalog with catalog_id exists
         :return: Dictionary of deserialized JSON.  List of dictionaries, each dictionary a catalog.
         """
+        self._message('Get catalog catalog_id={}'.format(catalog_id))
         url = self._make_url('catalog')
         if catalog_id:
             url = self._url_append_path(url, catalog_id)
@@ -169,16 +185,36 @@ class Stac:
     # Item methods
     #
 
-    def insert_item(self, item, catalog_id):
+    def head_item(self, item_id, catalog_id):
         """
-        Insert a new STAC item into a STAC catalog.
+        Query to see if the STAC item exists by calling HTTP HEAD on it.
+        :param item_id: STAC item ID
+        :param catalog_id: Catalog ID
+        :return: True if item exists, False if not.
+        """
+        if not item_id:
+            raise StacException('Parameter item_id must be nonempty')
+        if not catalog_id:
+            raise StacException('Parameter catalog_id must be nonempty')
+        url = self._make_url('catalog/{}/item/{}'.format(catalog_id, item_id))
+        try:
+            self._head(url)
+            return True
+        except StacException as exp:
+            if exp.response.status_code == 404:
+                return False
+            raise
 
-        :param dict item: STAC item.
+    def insert_stac(self, stac, catalog_id):
+        """
+        Insert a new STAC item or feature collection into a STAC catalog.
+
+        :param dict stac: STAC item or feature collection.
         :param str catalog_id:  Catalog to insert item into.
         :return:
         """
         url = self._make_url('catalog/{}/item'.format(catalog_id))
-        return self._post(url, json=item)
+        return self._post(url, json=stac)
 
     def insert_items(self, items, catalog_id, attachments=None):
         """
@@ -220,19 +256,39 @@ class Stac:
             else:
                 return items[0]
 
-    def update_item(self, item, catalog_id=None):
+    def upsert_item(self, body, catalog_id):
         """
-        Update an existing STAC item.
+        Upsert a STAC item, either as a Feature or a FeatureCollection.
 
         :param dict item: STAC item.
         :param str catalog_id: Catalog containing STAC item.
         :return:
         """
-        item_id = item.get('id')
+        if not body:
+            raise StacException('Required parameter body is empty.')
+        if not catalog_id:
+            raise StacException('Required parameter catalog_id is empty')
+
+        # Get the STAC item ID from either the feature or feature collection, since we need
+        # it to form the URL path
+        type = body.get('type')
+        if type == 'Feature':
+            item_id = body.get('id')
+        elif type == 'FeatureCollection':
+            features = body.get('features')
+            if not features:
+                raise StacException('FeatureCollection has no features property')
+            if len(features) != 1:
+                raise StacException('FeatureCollection features must have exactly one item to PUT')
+            item_id = features[0].get('id')
+        else:
+            raise StacException('PUT request must be GeoJSON of type Feature or FeatureCollection')
+
         if not item_id:
             raise StacException('Item has no "id" property.')
+
         url = self._make_url('catalog/{}/item/{}'.format(catalog_id, item_id))
-        return self._put(url)
+        return self._put(url, json=body)
 
     def delete_item(self, item_id, catalog_id):
         """
@@ -331,6 +387,17 @@ class Stac:
         return {
             'Authorization': 'Bearer {}'.format(self._token)
         }
+
+    def _head(self, url, **kwargs):
+        """
+        Perform an HTTP HEAD on the goose API and return the result.
+
+        :param url: URL to call
+        :param kwargs: Keyword arguments supported by requests.get.
+        :return: Dict or None.
+        """
+        self._message('HEAD: {}'.format(url))
+        return self._handle_response(requests.get(url, **kwargs, headers=self._create_http_headers()))
 
     def _get(self, url, **kwargs):
         """
