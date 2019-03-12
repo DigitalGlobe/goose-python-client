@@ -10,9 +10,9 @@ import boto3
 import json
 import os
 import requests
-import sys
 import urllib.parse
 
+from concurrent import futures
 from datetime import datetime
 
 
@@ -102,8 +102,18 @@ class Inventory:
         }
     ]
 
-    def __init__(self, inventory_service_url=None, inventory_selection_service_url=None, token=None):
+    def __init__(self, inventory_service_url=None, inventory_selection_service_url=None, token=None,
+                 error_file=None):
+        """
+
+        :param inventory_service_url:
+        :param inventory_selection_service_url:
+        :param token:
+        :param error_file:  Image ID's of images inventory service returns non-200 for,
+            or images that are no ingest complete
+        """
         self.token = token
+        self.error_file = error_file
         if inventory_service_url:
             self.inventory_service_url = inventory_service_url
         else:
@@ -112,6 +122,7 @@ class Inventory:
             self.inventory_selection_service_url = inventory_selection_service_url
         else:
             self.inventory_selection_service_url = self.inventory_selection_service_default_url
+        self.executor = futures.ThreadPoolExecutor(max_workers=5)
 
     def set_token(self, token):
         self.token = token
@@ -145,7 +156,8 @@ class Inventory:
         """
         Request image from the inventory service
         :param image_id: Image ID
-        :return: Dictionary of inventory service repsonse
+        :return: Dictionary of inventory service repsonse.  Return None if inventory service returns
+            error or image is not ingest complete
         """
         headers = {
             'Authorization': 'Bearer {}'.format(self.token)
@@ -155,8 +167,18 @@ class Inventory:
         response = requests.get(uri, headers=headers)
         if response.status_code != 200:
             print(response.text)
-            raise Exception('Failed to load image from inventory service:  {}'.format(uri))
-        return json.loads(response.text)
+            if self.error_file:
+                with open(self.error_file, 'a') as f:
+                    print('{} {}'.format(image_id, response.status_code), file=f)
+            return None
+        metadata = json.loads(response.text)
+        if not metadata.get('isIngestComplete'):
+            print('Image {} is not ingest complete'.format(image_id))
+            if self.error_file:
+                with open(self.error_file, 'a') as f:
+                    print('{} incomplete'.format(image_id), file=f)
+            return None
+        return metadata
 
     def get_sample_points_summary(self, image_id):
         """
@@ -221,18 +243,35 @@ class Inventory:
         Read an image from inventory and return a GeoJSON feature collection containing
         a single feature for the STAC item and its attachments.
         :param image_id:
-        :return: None if image is not ingest complete.
+        :return: None if image is not ingest complete, access is not allowed, or could not be
+            queried by inventory for some reason.
         """
-        inventory_image = self.get_image(image_id)
-        if not inventory_image.get('isIngestComplete'):
-            print('Image {} is not ingest complete'.format(image_id))
-            return None
-        inventory_points = self.get_sample_points_summary(image_id)
-        inventory_cloud = self.get_cloud(image_id)
-        inventory_stereo = self.get_stereo(image_id)
-        (stac, attachments) = self.create_stac_item(inventory_image, inventory_points, inventory_cloud,
-                                                    inventory_stereo, catalog)
-        return self.create_stac_item_feature_collection(stac, attachments)
+
+        # We have to make three service queries to get all the information we need to create
+        # the image's STAC item.  (For now we don't query stereo images because there aren't any.)
+        # So use futures to run the three queries simultaneously.
+        future_image = self.executor.submit(self.get_image, image_id)
+        future_points = self.executor.submit(self.get_sample_points_summary, image_id)
+        future_cloud = self.executor.submit(self.get_cloud, image_id)
+        results = futures.wait([future_image, future_points, future_cloud])
+        if results.not_done:
+            print('Not all inventory requests worked')
+        else:
+            try:
+                inventory_image = future_image.result()
+                if inventory_image is None:
+                    # Error captured by get_image and logged to file, so just return None
+                    return None
+                inventory_points = future_points.result()
+                inventory_cloud = future_cloud.result()
+                (stac, attachments) = self.create_stac_item(
+                    inventory_image, inventory_points, inventory_cloud, None, catalog)
+                return self.create_stac_item_feature_collection(stac, attachments)
+            except Exception as exp:
+                print('Exception for image {}:  {}'.format(image_id, exp))
+        if self.error_file:
+            with open(self.error_file, 'a') as f:
+                print('{} other'.format(image_id), file=f)
 
     def create_stac_item(self, inventory_image, inventory_points, inventory_cloud, inventory_stereo, catalog):
         """
@@ -241,6 +280,7 @@ class Inventory:
         :param inventory_points: Dictionary of sample points summary metadata returned by inventory service.
         :param inventory_cloud: Dictionary of cloud metadata returned by inventory selection service.
         :param inventory_stereo: Dictionary of stereo pair metadata returned by inventory selection service.
+            May be None to just set dg:stereo_pair_identifiers to empty array.
         :return: Tuple (stac_item, stac_attachments)
         """
 
@@ -312,7 +352,7 @@ class Inventory:
             'links': [
                 {
                     'rel': 'self',
-                    'href': 'https://api.discover.digitallgobe.com/v2/stac/catalog/{}/item/{}'.format(catalog, image_id)
+                    'href': 'https://api.discover.digitalglobe.com/v2/stac/catalog/{}/item/{}'.format(catalog, image_id)
                 }
             ],
             'properties': {
@@ -353,7 +393,8 @@ class Inventory:
                 'dg:sun_azimuth_min': self._get_property(main_summary, 'targetToSunAzimuthAngleMin'),
                 'dg:sun_azimuth_max': self._get_property(main_summary, 'targetToSunAzimuthAngleMax'),
 
-                'dg:stereo_pair_identifiers': self._get_property(inventory_stereo, 'stereoIdentifiers'),
+                'dg:stereo_pair_identifiers':
+                    [] if not inventory_stereo else self._get_property(inventory_stereo, 'stereoIdentifiers'),
                 'dg:bits_per_pixel': 16,
                 'dg:storage': None,
                 'dg:processing_options': [],
@@ -501,7 +542,7 @@ def list_images(inventory, filename):
         f.write(os.linesep.join(image_ids).encode('utf-8'))
 
 
-def process_images(inventory, catalog, images_todo_file, images_done_file=None, output_folder=None,
+def process_images(inventory, catalog, images_todo_file, images_done_file, output_folder=None,
                    queue_url=None, max_images=None):
     """
 
@@ -509,6 +550,7 @@ def process_images(inventory, catalog, images_todo_file, images_done_file=None, 
     :param catalog: Name of existing STAC catalog to insert items into
     :param images_todo_file: File containing image ID's to be processed.
     :param images_done_file: File containing image ID's already processed.
+    :param images_error_file:
     :param output_folder: Folder to write STAC items to.
     :param queue_url: SQS queue to send STAC items to.
     :param max_images: Maximum number of images to process before exiting.
@@ -516,8 +558,7 @@ def process_images(inventory, catalog, images_todo_file, images_done_file=None, 
     """
 
     count = 0
-    count_not_ingest_complete = 0
-    count_skip = 0
+    count_not_processed = 0
     start_time = None
 
     if queue_url:
@@ -526,33 +567,30 @@ def process_images(inventory, catalog, images_todo_file, images_done_file=None, 
 
     tokenizer = P2020Token()
 
+    done_ids = []
+    if os.path.exists(images_done_file):
+        with open(images_done_file, 'r') as f:
+            done_ids = set([line.strip() for line in f.readlines()])
+            print('Read {} image IDs from done file'.format(len(done_ids)))
+
     with open(images_todo_file) as f:
-        input_ids = [line.strip() for line in f.readlines()]
+        input_ids = [line.strip() for line in f.readlines() if line.strip() not in done_ids]
+    print('Read {} images still to process'.format(len(input_ids)))
+
     done_file = None
+    incomplete_file = None
     try:
-        output_ids = []
-        if images_done_file:
-            if os.path.exists(images_done_file):
-                with open(images_done_file, 'r') as f:
-                    output_ids = set([line.strip() for line in f.readlines()])
-                    print('Read {} image IDs from output file'.format(len(output_ids)))
-            done_file = open(images_done_file, 'a')
+        done_file = open(images_done_file, 'a')
 
         start_time = datetime.utcnow()
         for image_id in input_ids:
-            if image_id in output_ids:
-                count_skip += 1
-                continue
-
-            if count == 0 and count_skip > 0:
-                print('Skipped {} images'.format(count_skip))
             count += 1
             print('Processing image {}:  {}'.format(count, image_id))
 
             inventory.set_token(tokenizer.get_token())
             feature_collection = inventory.read_item_from_inventory(image_id, catalog)
             if not feature_collection:
-                count_not_ingest_complete += 1
+                count_not_processed += 1
             else:
                 message = json.dumps(feature_collection, indent=4)
                 if output_folder:
@@ -581,10 +619,12 @@ def process_images(inventory, catalog, images_todo_file, images_done_file=None, 
     finally:
         if done_file:
             done_file.close()
+        if incomplete_file:
+            incomplete_file.close()
 
     print()
     print('Total count:  {}'.format(count))
-    print('Not ingest complete count: {}'.format(count_not_ingest_complete))
+    print('Not processed: {}'.format(count_not_processed))
     if start_time:
         elapsed = datetime.utcnow() - start_time
         print('Elapsed time:  {}'.format(elapsed))
@@ -601,8 +641,12 @@ if __name__ == '__main__':
 
     # Options for files containing image ID's and the state of the bulk load.
     # When processing STAC items both of these options must be specified.
-    parser.add_argument('--todo-file', required=False, help="To-do list.  File containing image ID's to process")
-    parser.add_argument('--done-file', required=False, help="Done list.  File containing image ID's already processed")
+    parser.add_argument(
+        '--todo-file', required=False, help="To-do list.  File containing image ID's to process")
+    parser.add_argument(
+        '--done-file', required=False, help="Done list.  File containing image ID's already processed")
+    parser.add_argument(
+        '--error-file', required=False, help="Error list.  File containing image ID's that failed to process")
 
     # Destinations for sending STAC items, either files or SQS queue
     parser.add_argument('--stac-folder', required=False, help="Folder to write STAC items to")
@@ -614,11 +658,10 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    inventory = Inventory()
-
     if args.list_images:
+        inventory = Inventory()
         list_images(inventory, args.list_images)
-    elif args.todo_file and args.done_file:
+    elif args.todo_file and args.done_file and args.error_file:
         if not args.catalog:
             print('Must specify command line option "--catalog" when processing images')
             exit(1)
@@ -628,7 +671,8 @@ if __name__ == '__main__':
         if not has_destination:
             print('Must specify either --stac-folder or --queue-url option, but not both')
 
-        process_images(inventory, args.catalog, args.todo_file, images_done_file=args.done_file, output_folder=args.stac_folder,
-                       queue_url=args.queue_url, max_images=args.max_images)
+        inventory = Inventory(error_file=args.error_file)
+        process_images(inventory, args.catalog, args.todo_file, args.done_file,
+                       output_folder=args.stac_folder, queue_url=args.queue_url, max_images=args.max_images)
     else:
         print('No action specified on command line')
