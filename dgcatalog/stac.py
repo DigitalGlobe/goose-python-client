@@ -9,6 +9,7 @@ import getpass
 import json
 import requests
 import urllib.parse
+from contextlib import contextmanager
 from datetime import datetime
 from enum import Enum
 
@@ -89,6 +90,15 @@ class Stac:
     def _message(self, message):
         if self.verbose:
             print(message)
+
+    @contextmanager
+    def timer(self, *args, **kwargs):
+        start_time = datetime.now()
+        try:
+            yield
+        finally:
+            elapsed = datetime.now() - start_time
+            self._message('Elapsed seconds: {}'.format(elapsed.total_seconds()))
 
     def get_token(self, auth_url, username, password):
         """
@@ -396,8 +406,9 @@ class Stac:
         :param kwargs: Keyword arguments supported by requests.get.
         :return: Dict or None.
         """
-        self._message('HEAD: {}'.format(url))
-        return self._handle_response(requests.get(url, **kwargs, headers=self._create_http_headers()))
+        with self.timer():
+            self._message('HEAD: {}'.format(url))
+            return self._handle_response(requests.get(url, **kwargs, headers=self._create_http_headers()))
 
     def _get(self, url, **kwargs):
         """
@@ -407,8 +418,9 @@ class Stac:
         :param kwargs: Keyword arguments supported by requests.get.
         :return: Dict or None.
         """
-        self._message('GET: {}'.format(url))
-        return self._handle_response(requests.get(url, **kwargs, headers=self._create_http_headers()))
+        with self.timer():
+            self._message('GET: {}'.format(url))
+            return self._handle_response(requests.get(url, **kwargs, headers=self._create_http_headers()))
 
     def _post(self, url, **kwargs):
         """
@@ -418,8 +430,9 @@ class Stac:
         :param kwargs: Keyword arguments supported by requests.post.
         :return: Dict or None.
         """
-        self._message('POST: {}'.format(url))
-        return self._handle_response(requests.post(url, **kwargs, headers=self._create_http_headers()))
+        with self.timer():
+            self._message('POST: {}'.format(url))
+            return self._handle_response(requests.post(url, **kwargs, headers=self._create_http_headers()))
 
     def _put(self, url, **kwargs):
         """
@@ -429,8 +442,9 @@ class Stac:
         :param kwargs: Keyword arguments supported by requests.put.
         :return: Dict or None.
         """
-        self._message('PUT: {}'.format(url))
-        return self._handle_response(requests.put(url, **kwargs, headers=self._create_http_headers()))
+        with self.timer():
+            self._message('PUT: {}'.format(url))
+            return self._handle_response(requests.put(url, **kwargs, headers=self._create_http_headers()))
 
     def _delete(self, url, **kwargs):
         """
@@ -440,8 +454,9 @@ class Stac:
         :param kwargs: Keyword arguments supported by requests.delete.
         :return: Dict or None.
         """
-        self._message('DELETE: {}'.format(url))
-        return self._handle_response(requests.delete(url, **kwargs, headers=self._create_http_headers()))
+        with self.timer():
+            self._message('DELETE: {}'.format(url))
+            return self._handle_response(requests.delete(url, **kwargs, headers=self._create_http_headers()))
 
     def _url_append_path(self, url, path):
         """
